@@ -1,0 +1,31 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color purple_200
+color purple_500
+color purple_700
+color teal_200
+color teal_700
+color white
+drawable ic_launcher
+id img_background
+id layout_root
+id permission_button
+id status_text
+id test_notification_button
+id text_lyrics_current
+id text_lyrics_next
+id text_lyrics_previous
+layout activity_main
+layout notification_lyrics
+layout notification_lyrics_small
+string app_name
+string grant_permission
+string permission_explanation
+string permission_granted
+string permission_required
+string service_name
+string waiting_for_music
+style Theme.LyricsNotificationApp
+xml backup_rules
+xml data_extraction_rules

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lyrics Notification</string>
+    <string name="service_name">Lyrics Listener Service</string>
+    <string name="permission_required">Notification Access Required</string>
+    <string name="permission_explanation">This app needs notification access to read the current song and display lyrics. Please enable it in settings.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="permission_granted">Service is Active</string>
+    <string name="waiting_for_music">Waiting for music...</string>
+</resources>
