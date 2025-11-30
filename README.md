@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/b2811fb2-2b3c-4dd4-aa14-c6b99b4f2c4b
+
 # LyricsNotificationApp
 
 An Android application that displays synchronized lyrics directly in your notification shade.
