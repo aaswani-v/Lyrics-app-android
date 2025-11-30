@@ -8,6 +8,7 @@ An Android application that displays synchronized lyrics directly in your notifi
 - **Notification Integration**: Uses a custom notification layout to show lyrics unobtrusively.
 - **Background Service**: Runs in the background to detect music playback and fetch lyrics.
 - **Smart Idle State**: Shows a "Waiting for music..." state when no music is detected.
+- **Music Player**: YoutubeMusic (works), Spotify (yet to be tested)
 
 ## Tech Stack
 
@@ -30,4 +31,3 @@ An Android application that displays synchronized lyrics directly in your notifi
 
 ## License
 
-[Add License Here]
