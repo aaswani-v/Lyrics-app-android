@@ -8,6 +8,10 @@ import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import kotlinx.coroutines.*
 
@@ -20,11 +24,45 @@ class MediaSessionListenerService : NotificationListenerService(), MediaSessionM
     private var currentLyrics: List<SyncedLine>? = null
     private var lastTrackId: String = ""
     private var isPlaying = false
+    private var isServiceEnabled = true
+    private val PREFS_NAME = "LyricsPrefs"
+    private val KEY_SERVICE_ENABLED = "service_enabled"
+
+    private val toggleReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "com.example.lyricsnotification.TOGGLE_SERVICE") {
+                val enabled = intent.getBooleanExtra("enabled", true)
+                isServiceEnabled = enabled
+                if (enabled) {
+                    // Restart logic
+                    val mediaSessionManager = getSystemService(MEDIA_SESSION_SERVICE) as MediaSessionManager
+                    val componentName = ComponentName(this@MediaSessionListenerService, MediaSessionListenerService::class.java)
+                    onActiveSessionsChanged(mediaSessionManager.getActiveSessions(componentName))
+                } else {
+                    // Stop logic
+                    updateJob?.cancel()
+                    lyricsManager?.cancelNotification()
+                    currentController?.unregisterCallback(callback)
+                    currentController = null
+                }
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
         lyricsManager = LyricsNotificationManager(this)
         Log.d("LyricsService", "Service Created")
+        
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        isServiceEnabled = prefs.getBoolean(KEY_SERVICE_ENABLED, true)
+
+        val filter = IntentFilter("com.example.lyricsnotification.TOGGLE_SERVICE")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(toggleReceiver, filter, Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(toggleReceiver, filter)
+        }
     }
 
     override fun onListenerConnected() {
@@ -47,6 +85,8 @@ class MediaSessionListenerService : NotificationListenerService(), MediaSessionM
     }
 
     private fun findActiveMediaSession(controllers: List<MediaController>?) {
+        if (!isServiceEnabled) return
+
         if (controllers.isNullOrEmpty()) {
             lyricsManager?.showIdleNotification()
             return
@@ -169,5 +209,6 @@ class MediaSessionListenerService : NotificationListenerService(), MediaSessionM
         super.onDestroy()
         serviceScope.cancel()
         currentController?.unregisterCallback(callback)
+        unregisterReceiver(toggleReceiver)
     }
 }

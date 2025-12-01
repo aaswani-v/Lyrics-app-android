@@ -13,6 +13,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
     private lateinit var permissionButton: Button
+    private lateinit var toggleServiceButton: Button
+    private val PREFS_NAME = "LyricsPrefs"
+    private val KEY_SERVICE_ENABLED = "service_enabled"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +32,22 @@ class MainActivity : AppCompatActivity() {
             val manager = LyricsNotificationManager(this)
             manager.showIdleNotification()
             android.widget.Toast.makeText(this, "Test Notification Sent", android.widget.Toast.LENGTH_SHORT).show()
+        }
+
+        toggleServiceButton = findViewById(R.id.toggle_service_button)
+        updateToggleButton()
+
+        toggleServiceButton.setOnClickListener {
+            val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            val currentState = prefs.getBoolean(KEY_SERVICE_ENABLED, true)
+            val newState = !currentState
+            
+            prefs.edit().putBoolean(KEY_SERVICE_ENABLED, newState).apply()
+            updateToggleButton()
+            
+            val intent = Intent("com.example.lyricsnotification.TOGGLE_SERVICE")
+            intent.putExtra("enabled", newState)
+            sendBroadcast(intent)
         }
     }
 
@@ -59,5 +78,11 @@ class MainActivity : AppCompatActivity() {
         val cn = ComponentName(this, MediaSessionListenerService::class.java)
         val flat = Settings.Secure.getString(contentResolver, "enabled_notification_listeners")
         return flat != null && flat.contains(cn.flattenToString())
+    }
+
+    private fun updateToggleButton() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val isEnabled = prefs.getBoolean(KEY_SERVICE_ENABLED, true)
+        toggleServiceButton.text = if (isEnabled) "Stop Service" else "Start Service"
     }
 }
