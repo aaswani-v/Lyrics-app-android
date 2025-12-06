@@ -29,12 +29,17 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final Button testNotificationButton;
 
+  @NonNull
+  public final Button toggleServiceButton;
+
   private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull Button permissionButton,
-      @NonNull TextView statusText, @NonNull Button testNotificationButton) {
+      @NonNull TextView statusText, @NonNull Button testNotificationButton,
+      @NonNull Button toggleServiceButton) {
     this.rootView = rootView;
     this.permissionButton = permissionButton;
     this.statusText = statusText;
     this.testNotificationButton = testNotificationButton;
+    this.toggleServiceButton = toggleServiceButton;
   }
 
   @Override
@@ -82,8 +87,14 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.toggle_service_button;
+      Button toggleServiceButton = ViewBindings.findChildViewById(rootView, id);
+      if (toggleServiceButton == null) {
+        break missingId;
+      }
+
       return new ActivityMainBinding((LinearLayout) rootView, permissionButton, statusText,
-          testNotificationButton);
+          testNotificationButton, toggleServiceButton);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

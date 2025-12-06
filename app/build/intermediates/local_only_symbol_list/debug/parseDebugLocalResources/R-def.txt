@@ -16,6 +16,7 @@ id test_notification_button
 id text_lyrics_current
 id text_lyrics_next
 id text_lyrics_previous
+id toggle_service_button
 layout activity_main
 layout notification_lyrics
 layout notification_lyrics_small

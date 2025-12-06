@@ -3482,6 +3482,7 @@ id title
 id titleDividerNoCustom
 id title_template
 id toggle
+id toggle_service_button
 id top
 id topPanel
 id touch_outside
